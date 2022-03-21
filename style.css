@@ -1,0 +1,146 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+main {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+aside {
+    flex: 1;
+}
+
+.wrapper {
+    flex: 3;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    padding: 20px;
+    border: 4px solid gainsboro;
+}
+
+form > span {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 20px;
+}
+
+form > span > input {
+    flex: 1;
+}
+
+input, select {
+    padding: 12px 18px;
+}
+
+.preview {
+    padding: 20px;
+    background-color: gainsboro;
+    min-height: 30%;
+    width: 100%;
+}
+
+.truck-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
+.truck-image > .front {
+    position: absolute;
+    background-color: black;
+    height: 80%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 140px;
+    z-index: 3;
+}
+
+.truck-image > .body {
+    position: absolute;
+    background-color: black;
+    width: 100%;
+    height: 75px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.truck-image > .trailer {
+    position: absolute;
+    background-color: red;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 160px;
+    z-index: 1;
+    transition: width 0.4s cubic-bezier(0.78, -0.6, 0.32, 1.6), height 0.4s cubic-bezier(0.78, -0.6, 0.32, 1.6);
+}
+
+.truck-image[length="short"] > .trailer {
+    width: calc((100% - 160px) / 3);
+}
+
+.truck-image[length="middle"] > .trailer {
+    width: calc((100% - 160px) / 3 * 2);
+}
+
+.truck-image[length="long"] > .trailer {
+    width: calc(100% - 160px);
+}
+
+.truck-image[width="narrow"] > .trailer {
+    height: 50%;
+}
+
+.truck-image[width="middle"] > .trailer {
+    height: 66%;
+}
+
+.truck-image[width="wide"] > .trailer {
+    height: 100%;
+}
+
+.truck-image > .wheel {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    background-color: black;
+    border-radius: 10px;
+    transform: translateX(-50%);
+    top: 0;
+    transition: opacity .3s ease;
+}
+
+.truck-image:not([distance="global"]) > .wheel:nth-of-type(odd) {
+    opacity: 0;
+}
+
+.truck-image > .wheel::before, .truck-image > .wheel::after{
+    content: '';
+    display: block;
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    background-color: darkslategray;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.truck-image > .wheel::before{
+    top: 0;
+}
+
+.truck-image > .wheel::after{
+    bottom: 0;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css" />
+    <title>Stackr</title>
+</head>
+
+<body>
+    <header></header>
+    <main>
+        <aside>
+            <div id="truck">
+                <div class="preview">
+                    <div class="truck-image" length="long" width="middle" distance="local">
+                        <div class="front"></div>
+                        <div class="trailer"></div>
+                        <div class="body"></div>
+                        <div class="wheel" style="bottom: 0; left: 15%"></div>
+                        <div class="wheel" style="bottom: 0; left: 75%"></div>
+                        <div class="wheel" style="bottom: 0; left: 90%"></div>
+                    </div>
+                </div>
+                <form id="truck-form">
+                    <span>
+                        <span>
+                            <label for="truck-length">Lengte</label>
+                            <input type="number" name="length" id="truck-length" placeholder="6" min="1" />
+                        </span>
+                        <span>
+                            <label for="truck-width">Breedte</label>
+                            <input type="number" name="width" id="truck-width" placeholder="2" min="1" />
+                        </span>
+                    </span>
+                    <label for="truck-type">Type</label>
+                    <select name="type" id="truck-type">
+                        <option value="" disabled selected>Selecteer transporttype</option>
+                        <option value="cold">Koud transport</option>
+                        <option value="fragile">Breekbaar transport</option>
+                        <option value="general">Algemeen transport</option>
+                        <option value="pallet">Pallets</option>
+                        <option value="fast">Snelkoerier</option>
+                    </select>
+                    <label>Actieradius</label>
+                    <span>
+                        <label for="truck-distance-1">Lokaal</label>
+                        <input type="radio" name="distance" id="truck-distance-1" value="local" />
+                    </span>
+                    <span>
+                        <label for="truck-distance-2">Globaal</label>
+                        <input type="radio" name="distance" id="truck-distance-2" value="global" />
+                    </span>
+                </form>
+            </div>
+        </aside>
+        <div class="wrapper">
+            <svg id="conveyor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 200">
+                <path id="path"
+                    d="M 29.928125,119.32884 C 59.868756,78.85387 99.789596,30.283895 138.66049,30.104515 c 80.46172,-0.37133 90.87185,137.794285 140.7729,129.699295 40.35037,-6.54568 49.90105,-80.94994 86.53937,-78.86548 33.24073,1.89117 22.2547,70.77048 73.14399,70.77048 39.92084,0 58.65264,-56.66496 99.80211,-56.66496 49.90105,0 69.86147,80.94995 99.8021,48.56997"
+                    style="fill: none; stroke: #000; stroke-width: 1" />
+            </svg>
+        </div>
+    </main>
+    <footer></footer>
+    <script src="./app.js"></script>
+</body>
+
+</html>
