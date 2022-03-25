@@ -28,7 +28,7 @@
                     <span>
                         <span>
                             <label for="truck-length">Lengte</label>
-                            <input type="number" name="length" id="truck-length" placeholder="6" min="1" />
+                            <input type="number" name="len" id="truck-length" placeholder="6" min="1" />
                         </span>
                         <span>
                             <label for="truck-width">Breedte</label>
@@ -54,37 +54,14 @@
                         <input type="radio" name="distance" id="truck-distance-2" value="global" />
                     </span>
                     <span>
-                        <button type="button" onclick="addTruck()">Toevoegen</button>
+                        <button type="button" onclick="submitTruck()">Toevoegen</button>
                         <button type="button" onclick="addBox()">Doos</button>
+                        <button type="button" onclick="addConveyor()">Band</button>
                     </span>
                 </form>
             </div>
         </aside>
         <div class="wrapper">
-            <div class="column">
-                <svg id="conveyor" width="100" height="700" viewBox="0 0 100 700" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <rect width="100" height="700" fill="white" />
-                    <rect width="100" height="700" fill="#FFA4A4" />
-                    <path class="conveyor-path" d="M50 0V700" stroke="black" />
-                </svg>
-            </div>
-            <div class="column">
-                <svg id="conveyor-1" width="100" height="700" viewBox="0 0 100 700" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <rect width="100" height="700" fill="white" />
-                    <rect width="100" height="700" fill="#FFA4A4" />
-                    <path class="conveyor-path" d="M50 0V700" stroke="black" />
-                </svg>
-                <div class="truck-image" length="long" width="middle" distance="local">
-                    <div class="front"></div>
-                    <div class="trailer"></div>
-                    <div class="body"></div>
-                    <div class="wheel" style="bottom: 0; left: 15%"></div>
-                    <div class="wheel" style="bottom: 0; left: 75%"></div>
-                    <div class="wheel" style="bottom: 0; left: 90%"></div>
-                </div>
-            </div>
         </div>
     </main>
     <footer></footer>
