@@ -1,8 +1,10 @@
+var conveyors = [];
+
 class Box {
     constructor(displayElement) {
         this.displayElement = displayElement
         this.position = 0.0;
-        this.speed = 0.1;
+        this.speed = 0.3;
         this.deltaTime = 1000;
 
         const movementInterval = setInterval(() => {
@@ -19,8 +21,8 @@ class Conveyor {
     constructor(svg) {
         this.boxes = [];
         this.svg = svg;
-        this.refreshRate = 1000;
-        this.pathElement = svg.getElementById('path');
+        this.refreshRate = 25;
+        this.pathElement = svg.getElementsByClassName('conveyor-path')[0];
         this.start();
     }
 
@@ -34,6 +36,10 @@ class Conveyor {
 
     getPointAtLength(x) {
         return this.pathElement.getPointAtLength(x);
+    }
+
+    setTruck(truck) {
+        this.truck = truck;
     }
 
     addBox(box) {
@@ -54,7 +60,7 @@ class Conveyor {
     #updateConveyor(conveyor) {
         for (const box of conveyor.boxes) {
             let p = conveyor.getPointAtLength(box.position * conveyor.pathLength);
-            box.displayElement.setAttribute("transform", `translate(${p.x}, ${p.y})`);
+            box.displayElement.setAttribute("transform", `translate(${p.x - box.displayElement.getAttribute('width') / 2}, ${p.y - box.displayElement.getAttribute('height') / 2})`);
 
             if (box.position == 1) {
                 conveyor.boxes.remove(box);
@@ -69,6 +75,10 @@ class Truck {
         this.width = width;
         this.type = type;
         this.distance = distance;
+    }
+
+    get truckImage() {
+        // TODO: Return truck image div
     }
 }
 
@@ -106,17 +116,17 @@ function initialiseTruckVisualisation() {
 }
 
 function initialisePackageConveyor() {
-    const conveyor = new Conveyor(document.getElementById('conveyor'));
-    setInterval(() => {
-        const svgns = "http://www.w3.org/2000/svg",
-            dot = document.createElementNS(svgns, 'circle'),
-            box = new Box(dot);
+    conveyors[0] = new Conveyor(document.getElementById('conveyor'));
+}
 
-        dot.setAttribute('r', 10);
-        dot.setAttribute('cy', 0);
-        dot.setAttribute('cx', 0);
-        dot.setAttribute('fill', "#dd1819");
+function addBox() {
+    const svgns = "http://www.w3.org/2000/svg",
+        boxDisplay = document.createElementNS(svgns, 'rect'),
+        box = new Box(boxDisplay);
 
-        conveyor.addBox(box);
-    }, 3000);
+    boxDisplay.setAttribute('width', 50);
+    boxDisplay.setAttribute('height', 50);
+    boxDisplay.style.fill = 'brown'
+
+    conveyors[0].addBox(box);
 }

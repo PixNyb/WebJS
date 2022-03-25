@@ -18,6 +18,21 @@ aside {
 
 .wrapper {
     flex: 3;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.wrapper .column {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 200px;
+}
+
+.wrapper .truck-image {
+    transform-origin: center;
+    transform: rotate(-90deg) translate(-140px);
 }
 
 form {
@@ -52,7 +67,7 @@ input, select {
 
 .truck-image {
     position: relative;
-    width: 100%;
+    width: 500px;
     height: 200px;
 }
 
@@ -143,4 +158,10 @@ input, select {
 
 .truck-image > .wheel::after{
     bottom: 0;
+}
+
+.box {
+    width: 10px;
+    height: 10px;
+    background-color: burlywood;
 }
