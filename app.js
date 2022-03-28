@@ -60,7 +60,7 @@ class Conveyor {
     }
 
     addBox(box) {
-        this.svg.appendChild(box.displayElement);
+        this.svg.parentElement.appendChild(box.displayElement);
         return this.boxes.push(box);
     }
 
@@ -77,7 +77,8 @@ class Conveyor {
     #updateConveyor(conveyor) {
         for (const box of conveyor.boxes) {
             let p = conveyor.getPointAtLength(box.position * conveyor.pathLength);
-            box.displayElement.setAttribute("transform", `translate(${p.x - box.displayElement.getAttribute('width') / 2}, ${p.y - box.displayElement.getAttribute('height') / 2})`);
+            box.displayElement.style.top = `${p.y}px`;
+            // box.displayElement.style.left = `${p.x}px`;
 
             if (box.position == 1) {
                 conveyor.boxes.remove(box);
@@ -152,13 +153,12 @@ function initialiseTruckVisualisation() {
 }
 
 function addBox() {
-    const svgns = "http://www.w3.org/2000/svg",
-        boxDisplay = document.createElementNS(svgns, 'rect'),
+
+    // Create a div with class box
+    const boxDisplay = document.createElement('div'),
         box = new Box(boxDisplay);
 
-    boxDisplay.setAttribute('width', 50);
-    boxDisplay.setAttribute('height', 50);
-    boxDisplay.style.fill = 'brown'
+    boxDisplay.classList.add('box');
 
     conveyors.forEach(e => e.addBox(box));
 }
