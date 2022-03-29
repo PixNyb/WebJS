@@ -10,7 +10,8 @@ const conveyorTemplate =
     audio = new Audio('https://upload.wikimedia.org/wikipedia/commons/e/e5/Tetris_theme.ogg');
 
 var conveyors = [];
-
+var trucks = []
+let lastBoxId = 0;
 class Box {
     constructor(displayElement) {
         this.displayElement = displayElement
@@ -23,6 +24,8 @@ class Box {
 
             if (this.position >= 1) clearInterval(movementInterval);
         }, 1000 / this.deltaTime);
+
+        this.id = lastBoxId++;
     }
 }
 
@@ -88,11 +91,21 @@ class Conveyor {
 }
 
 class Truck {
+
     constructor(length, width, type, distance) {
         this.len = length;
         this.width = width;
         this.type = type;
         this.distance = distance;
+        this.trailerLoad = new Array(length).fill(0);
+        for (let i = 0; i < length; i++) {
+            this.trailerLoad[i] = new Array(width).fill(0);
+        }
+        for (let i = 0; i < length; i++) {
+            for (let j = 0; j < width; j++) {
+                this.trailerLoad[i][j] = null;
+            }
+        }
     }
 
     get truckImage() {
@@ -102,11 +115,28 @@ class Truck {
         elem.setAttribute('type', this.type)
         elem.innerHTML = `
             <div class="front"></div>
-            <div class="trailer"></div>
+            <div class="trailer" data-truck="0"></div>
             <div class="body"></div>
             <div class="wheel" style="bottom: 0; left: 15%"></div>
             <div class="wheel" style="bottom: 0; left: 75%"></div>
             <div class="wheel" style="bottom: 0; left: 90%"></div>`;
+
+        const trailer = elem.getElementsByClassName('trailer')[0];
+        trailer.style.gridTemplateRows = `repeat(${this.len}, 1fr)`;
+        trailer.style.gridTemplateRows = `repeat(${this.width}, 1fr)`;
+        for (let x = 0; x < this.len; x++) {
+            for (let j = 0; j < this.width; j++) {
+                let div = document.createElement('div');
+                div.classList.add('dropzone');
+                div.style.gridColumn = (x + 1) + ' / span 1';
+                div.style.gridRow = (j + 1) + ' / span 1';
+                div.addEventListener('drop', drop);
+                div.addEventListener('dragover', allowDrop);
+                div.setAttribute('data-x', x);
+                div.setAttribute('data-y', j);
+                trailer.appendChild(div);
+            }
+        }
 
         let i = 0;
         if (this.len > 5) i++;
@@ -152,6 +182,7 @@ function initialiseTruckVisualisation() {
     })
 }
 
+
 function addBox() {
 
     // Create a div with class box
@@ -159,7 +190,10 @@ function addBox() {
         box = new Box(boxDisplay);
 
     boxDisplay.classList.add('box');
-
+    boxDisplay.classList.add('transformable');
+    boxDisplay.setAttribute('id', `box-${box.id}`);
+    boxDisplay.setAttribute('draggable', 'true');
+    boxDisplay.addEventListener('dragstart', drag)
     conveyors.forEach(e => e.addBox(box));
 }
 
@@ -177,12 +211,32 @@ function addConveyor() {
     conveyors.push(conveyor);
 }
 
+function showConveyors(){
+    for (let i = 0; i < halls[currentHall].conveyors.length; i++) {
+        const conveyor = halls[currentHall].conveyors[i];
+        const wrapper = document.getElementsByClassName('wrapper')[0],
+            column = document.createElement('div');
+
+        column.classList.add('column');
+        column.innerHTML = conveyorTemplate;
+
+        console.log(conveyor);
+
+        wrapper.appendChild(column);
+
+        if (conveyor.truck != null){
+            wrapper.appendChild(conveyor.truck.truckImage)
+        }
+    }
+}
+
 function addTruck(truck) {
     conveyors.forEach(e => {
         if (e.truck == null) {
             return e.setTruck(truck);
         }
     });
+    trucks.push(truck);
 }
 
 function submitTruck() {
@@ -206,4 +260,176 @@ function serializeForm(form) {
     });
 
     return result;
+}
+
+
+function allowDrop(e) {
+    e.preventDefault();
+}
+function drag(e){
+    e.dataTransfer.setData('text/plain', e.target.id);
+}
+
+
+function drop(e){
+    e.preventDefault();
+
+
+    let data = e.dataTransfer.getData('text');
+    const truck = trucks[e.target.parentElement.getAttribute('data-truck')];
+    let x = e.target.getAttribute('data-x'),
+        y = e.target.getAttribute('data-y');
+
+    if (checkSpaceAvailable('Box', truck, x, y)){
+        const element = document.getElementById(data);
+        element.classList.remove('transformable');
+        element.style.position = 'static';
+        element.setAttribute('hidden', 'true');
+        e.target.appendChild(element);
+        //TODO change to correct numberth of trailer
+        const trailer = document.getElementsByClassName('trailer')[1];
+        populateWithBoxes('Box', truck, x, y, document.getElementById(data));
+        populateHTMLWithBoxes('Box', trailer, x, y)
+        document.getElementById(data).removeAttribute('draggable');
+        console.log(e.dataTransfer.getData('text'));
+    }
+
+
+}
+
+function checkSpaceAvailable(shape, truck, x, y){
+    x = parseInt(x);
+    y = parseInt(y);
+    switch (shape){
+        case 'T':
+            if (x === 0 || y === truck.width - 1 || y === 0) return false;
+            if (truck.trailerLoad[x][y] != null) return false;
+            if (truck.trailerLoad[x - 1][y] != null) return false;
+            if (truck.trailerLoad[x][y - 1] != null) return false;
+            if (truck.trailerLoad[x][y + 1] != null) return false;
+            return true;
+        case 'L':
+            if (x >= truck.len - 2 || y === truck.width - 1) return false;
+            if (truck.trailerLoad[x][y] != null) return false;
+            if (truck.trailerLoad[x + 1][y] != null) return false;
+            if (truck.trailerLoad[x + 2][y] != null) return false;
+            if (truck.trailerLoad[x][y + 1] != null) return false;
+            return true;
+        case 'Straight':
+            if (y >= truck.width - 3) return false;
+            if (truck.trailerLoad[x][y] != null) return false;
+            if (truck.trailerLoad[x][y + 1] != null) return false;
+            if (truck.trailerLoad[x][y + 2] != null) return false;
+            if (truck.trailerLoad[x][y + 3] != null) return false;
+            return true;
+        case 'Skew':
+            if (x <= 0 || y === truck.width - 1 || x === truck.len - 1) return false;
+            if (truck.trailerLoad[x][y] != null) return false;
+            if (truck.trailerLoad[x + 1][y] != null) return false;
+            if (truck.trailerLoad[x][y + 1] != null) return false;
+            if (truck.trailerLoad[x - 1][y + 1] != null) return false;
+            return true;
+        case 'Box':
+            if (y === truck.width - 1 || x === truck.len - 1) return false;
+            if (truck.trailerLoad[x][y] != null) return false;
+            if (truck.trailerLoad[x + 1][y] != null) return false;
+            if (truck.trailerLoad[x][y + 1] != null) return false;
+            if (truck.trailerLoad[x + 1][y + 1] != null) return false;
+            return true;
+    }
+}
+
+function populateWithBoxes(shape, truck, x, y, box){
+    x = parseInt(x);
+    y = parseInt(y);
+    switch (shape){
+        case 'T':
+            truck.trailerLoad[x][y] = box;
+            truck.trailerLoad[x - 1][y] = box;
+            truck.trailerLoad[x][y - 1] = box;
+            truck.trailerLoad[x][y + 1] = box;
+            break
+        case 'L':
+            truck.trailerLoad[x][y] = box;
+            truck.trailerLoad[x + 1][y] = box;
+            truck.trailerLoad[x + 2][y] = box;
+            truck.trailerLoad[x][y + 1] = box;
+            break
+        case 'Straight':
+            truck.trailerLoad[x][y] = box;
+            truck.trailerLoad[x][y + 1] = box;
+            truck.trailerLoad[x][y + 2] = box;
+            truck.trailerLoad[x][y + 3] = box;
+            break
+        case 'Skew':
+            truck.trailerLoad[x][y] = box;
+            truck.trailerLoad[x + 1][y] = box;
+            truck.trailerLoad[x][y + 1] = box;
+            truck.trailerLoad[x - 1][y + 1] = box;
+            break
+        case 'Box':
+            truck.trailerLoad[x][y] = box;
+            truck.trailerLoad[x + 1][y] = box;
+            truck.trailerLoad[x][y + 1] = box;
+            truck.trailerLoad[x + 1][y + 1] = box;
+            break
+    }
+}
+
+function populateHTMLWithBoxes(shape, trailer, x, y){
+    x = parseInt(x);
+    y = parseInt(y);
+    const elements = trailer.getElementsByClassName('dropzone');
+    switch (shape) {
+        case 'T':
+            for (let i = 0; i < elements.length; i++) {
+                const elementX = elements[i].getAttribute('data-x');
+                const elementY = elements[i].getAttribute('data-y');
+                if (elementX === x.toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x - 1).toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y - 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+            }
+            break
+        case 'L':
+            for (let i = 0; i < elements.length; i++) {
+                const elementX = elements[i].getAttribute('data-x');
+                const elementY = elements[i].getAttribute('data-y');
+                if (elementX === x.toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x + 1).toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x + 2).toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+            }
+            break
+        case 'Straight':
+            for (let i = 0; i < elements.length; i++) {
+                const elementX = elements[i].getAttribute('data-x');
+                const elementY = elements[i].getAttribute('data-y');
+                if (elementX === x.toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 2).toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 3).toString()) elements[i].style.backgroundColor = '#ffffff';
+            }
+            break
+        case 'Skew':
+            for (let i = 0; i < elements.length; i++) {
+                const elementX = elements[i].getAttribute('data-x');
+                const elementY = elements[i].getAttribute('data-y');
+                if (elementX === x.toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x + 1).toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x - 1).toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+            }
+            break
+        case 'Box':
+            for (let i = 0; i < elements.length; i++) {
+                const elementX = elements[i].getAttribute('data-x');
+                const elementY = elements[i].getAttribute('data-y');
+                if (elementX === x.toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x + 1).toString() && elementY === y.toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === x.toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+                if (elementX === (x + 1).toString() && elementY === (y + 1).toString()) elements[i].style.backgroundColor = '#ffffff';
+            }
+            break
+    }
 }

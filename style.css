@@ -99,6 +99,7 @@ input, select {
     left: 160px;
     z-index: 1;
     transition: width 0.4s cubic-bezier(0.78, -0.6, 0.32, 1.6), height 0.4s cubic-bezier(0.78, -0.6, 0.32, 1.6);
+    display: grid;
 }
 
 .truck-image[length="short"] > .trailer {
@@ -165,8 +166,19 @@ input, select {
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
     width: 50px;
     height: 50px;
     background-color: brown;
+    cursor: move;
+}
+
+.transformable {
+    transform: translate(-50%, -50%);
+}
+
+.dropzone {
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    position: static;
 }
