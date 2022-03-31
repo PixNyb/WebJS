@@ -31,6 +31,8 @@ const tetronimos = {
     ]
 }
 const halls = [];
+const tetrisAudio = new Audio('https://upload.wikimedia.org/wikipedia/commons/e/e5/Tetris_theme.ogg');
+tetrisAudio.loop = true;
 
 var currentHall = 0;
 var currentlyHovered = [];
@@ -105,8 +107,14 @@ class Truck {
                     </div>
                 `;
 
+        // Play audio
+        tetrisAudio.play();
+
         // Close modal on button click
-        modal.querySelector('#close').addEventListener('click', () => { modal.remove() });
+        modal.querySelector('#close').addEventListener('click', () => {
+            modal.remove()
+            tetrisAudio.pause();
+        });
 
         // Make a grid
         const grid = modal.querySelector('.grid');
@@ -457,10 +465,20 @@ document.getElementById('truck-form').addEventListener('submit', e => {
     const width = document.getElementById('width').value;
     const len = document.getElementById('length').value;
 
+    // Check if width and len are set
+    if (!width || !len) return console.log('Please set width and length');
+
     // Get truck type from select
     const type = document.getElementById('type').value;
 
+    // Check if type is set
+    if (!type) return console.log('Please set type');
+
     // Get truck distance from radio buttons
+    let distanceEl = document.querySelector('input[name="distance"]:checked')
+    if (distanceEl === null)
+        return console.log('No distance selected');
+
     const distance = document.querySelector('input[name="distance"]:checked').value;
 
     // Create a new truck
