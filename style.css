@@ -16,169 +16,210 @@ aside {
     flex: 1;
 }
 
-.wrapper {
-    flex: 3;
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-.wrapper .column {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    width: 200px;
-    position: relative;
-}
-
-.wrapper .truck-image {
-    transform-origin: center;
-    transform: rotate(-90deg) translate(-140px);
-}
-
 form {
     width: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    gap: 10px;
-    padding: 20px;
     border: 4px solid gainsboro;
+    padding: 20px;
 }
 
-form > span {
+form .page {
+    display: none;
+    flex-flow: column nowrap;
+    gap: 10px;
+}
+
+form span {
     display: flex;
     flex-flow: row nowrap;
     gap: 20px;
 }
 
-form > span > input {
+form span > input {
     flex: 1;
 }
 
-input, select {
-    padding: 12px 18px;
+#wrapper {
+    flex: 3;
+    display: flex;
+    flex-flow: row nowrap;
+    overflow-y: hidden;
 }
 
-.preview {
-    padding: 20px;
-    background-color: gainsboro;
-    min-height: 30%;
+.hall {
     width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 20px;
+    overflow: hidden;
 }
 
-.truck-image {
+.column {
+    width: 150px;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.conveyor {
+    width: 75px;
+    height: 100%;
+    background-color: burlywood;
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.truck-position {
+    flex: 1;
+}
+
+.truck {
+    margin-top: 20px;
     position: relative;
-    width: 500px;
-    height: 200px;
 }
 
-.truck-image > .front {
+.truck-trailer {
+    width: 100px;
+    height: 220px;
+    background-color: darkred;
+    position: relative;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.truck[type="cold"] .truck-trailer {
+    background-color: aqua;
+}
+
+.truck[type="fragile"] .truck-trailer {
+    background-color: orange;
+}
+
+.truck[type="pallet"] .truck-trailer {
+    background-color: gainsboro;
+    border: 5px solid gray
+}
+
+.truck[type="fast"] .truck-trailer {
+    background-color: yellow;
+    border: 5px solid yellowgreen
+}
+
+.truck-wheels {
+    width: 110px;
+    height: 30px;
     position: absolute;
-    background-color: black;
-    height: 80%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 140px;
-    z-index: 3;
-}
-
-.truck-image > .body {
-    position: absolute;
-    background-color: black;
-    width: 100%;
-    height: 75px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.truck-image > .trailer {
-    position: absolute;
-    background-color: red;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 160px;
-    z-index: 1;
-    transition: width 0.4s cubic-bezier(0.78, -0.6, 0.32, 1.6), height 0.4s cubic-bezier(0.78, -0.6, 0.32, 1.6);
-    display: grid;
-}
-
-.truck-image[length="short"] > .trailer {
-    width: calc((100% - 160px) / 3);
-}
-
-.truck-image[length="middle"] > .trailer {
-    width: calc((100% - 160px) / 3 * 2);
-}
-
-.truck-image[length="long"] > .trailer {
-    width: calc(100% - 160px);
-}
-
-.truck-image[width="narrow"] > .trailer {
-    height: 50%;
-}
-
-.truck-image[width="middle"] > .trailer {
-    height: 66%;
-}
-
-.truck-image[width="wide"] > .trailer {
-    height: 100%;
-}
-
-.truck-image > .wheel {
-    position: absolute;
-    width: 10px;
-    height: 100%;
-    background-color: black;
-    border-radius: 10px;
+    left: 50%;
+    top: 10px;
     transform: translateX(-50%);
-    top: 0;
-    transition: opacity .3s ease;
+    background-color: black;
 }
 
-.truck-image:not([distance="global"]) > .wheel:nth-of-type(odd) {
-    opacity: 0;
-}
-
-.truck-image > .wheel::before, .truck-image > .wheel::after{
+.truck[distance="global"] .truck-wheels::before {
     content: '';
     display: block;
-    position: absolute;
-    width: 60px;
+    width: 110px;
     height: 30px;
-    background-color: darkslategray;
+    background-color: black;
+    position: absolute;
+    bottom: -40px;
+}
+
+.truck-wheels::after {
+    content: '';
+    display: block;
+    width: 110px;
+    height: 30px;
+    background-color: black;
+    position: absolute;
+    bottom: -170px;
+}
+
+.truck-front {
+    width: 100px;
+    height: 85px;
+    margin: 10px 0;
+    background-color: black;
+    position: relative;
+}
+
+.truck-front::before {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 110px;
+    background-color: black;
+    position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    border-radius: 10px;
-    z-index: 1;
-}
-
-.truck-image > .wheel::before{
-    top: 0;
-}
-
-.truck-image > .wheel::after{
     bottom: 0;
 }
 
-.box {
+.truck-front::after {
+    content: '';
+    display: block;
+    width: 110px;
+    height: 30px;
+    background-color: black;
     position: absolute;
-    top: 0;
     left: 50%;
-    width: 50px;
-    height: 50px;
-    background-color: brown;
-    cursor: move;
+    transform: translateX(-50%);
+    bottom: 10px;
 }
 
-.transformable {
+.depart-truck {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 6;
     transform: translate(-50%, -50%);
 }
 
-.dropzone {
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-    position: static;
+.box {
+    width: 30px;
+    height: 30px;
+    background-color: brown;
+}
+
+.box[conveyor] {
+    position: absolute;
+}
+
+.list {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 10px;
+}
+
+.row {
+    display: inline-block;
+}
+
+.slot {
+    width: 60px;
+    height: 60px;
+    border: 2px solid black;
+}
+
+#modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    padding: 20px;
+    border: 2px solid black;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    z-index: 20;
+}
+
+.grid {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
 }

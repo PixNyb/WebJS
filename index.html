@@ -13,55 +13,51 @@
     <header></header>
     <main>
         <aside>
-            <div id="truck">
-                <div class="preview">
-                    <div class="truck-image" length="long" width="middle" distance="local">
-                        <div class="front"></div>
-                        <div class="trailer"></div>
-                        <div class="body"></div>
-                        <div class="wheel" style="bottom: 0; left: 15%"></div>
-                        <div class="wheel" style="bottom: 0; left: 75%"></div>
-                        <div class="wheel" style="bottom: 0; left: 90%"></div>
-                    </div>
-                </div>
+            <div>
                 <form id="truck-form">
-                    <span>
+                    <div class="page" order="1">
                         <span>
-                            <label for="truck-length">Lengte</label>
-                            <input type="number" name="len" id="truck-length" placeholder="6" min="1" />
+                            <label for="length">Lengte</label>
+                            <input type="number" name="length" id="length" placeholder="6" min="1" value="8" />
                         </span>
                         <span>
-                            <label for="truck-width">Breedte</label>
-                            <input type="number" name="width" id="truck-width" placeholder="2" min="1" />
+                            <label for="width">Breedte</label>
+                            <input type="number" name="width" id="width" placeholder="2" min="1" value="6" />
                         </span>
-                    </span>
-                    <label for="truck-type">Type</label>
-                    <select name="type" id="truck-type">
-                        <option value="" disabled selected>Selecteer transporttype</option>
-                        <option value="cold">Koud transport</option>
-                        <option value="fragile">Breekbaar transport</option>
-                        <option value="general">Algemeen transport</option>
-                        <option value="pallet">Pallets</option>
-                        <option value="fast">Snelkoerier</option>
-                    </select>
-                    <label>Actieradius</label>
+                    </div>
+                    <div class="page" order="2">
+                        <label for="type">Type</label>
+                        <select name="type" id="type">
+                            <option value="" disabled>Selecteer transporttype</option>
+                            <option value="cold">Koud transport</option>
+                            <option value="fragile">Breekbaar transport</option>
+                            <option value="general" selected>Algemeen transport</option>
+                            <option value="pallet">Pallets</option>
+                            <option value="fast">Snelkoerier</option>
+                        </select>
+                    </div>
+                    <div class="page" order="3">
+                        <label>Actieradius</label>
+                        <span>
+                            <label for="distance-1">Lokaal</label>
+                            <input type="radio" name="distance" id="distance-1" value="local" />
+                        </span>
+                        <span>
+                            <label for="distance-2">Globaal</label>
+                            <input type="radio" name="distance" id="distance-2" value="global" selected />
+                        </span>
+                        <button type="submit">Toevoegen</button>
+                    </div>
                     <span>
-                        <label for="truck-distance-1">Lokaal</label>
-                        <input type="radio" name="distance" id="truck-distance-1" value="local" />
-                    </span>
-                    <span>
-                        <label for="truck-distance-2">Globaal</label>
-                        <input type="radio" name="distance" id="truck-distance-2" value="global" />
-                    </span>
-                    <span>
-                        <button type="button" onclick="submitTruck()">Toevoegen</button>
-                        <button type="button" onclick="addBox()">Doos</button>
-                        <button type="button" onclick="addConveyor()">Band</button>
+                        <button type="button" id="next-page">Volgende pagina</button>
+                        <button type="button" id="add-box">Doos</button>
+                        <button type="button" id="add-conveyor">Band</button>
+                        <button type="button" id="hall-switch">Hal switch</button>
                     </span>
                 </form>
             </div>
         </aside>
-        <div class="wrapper">
+        <div id="wrapper">
         </div>
     </main>
     <footer></footer>
