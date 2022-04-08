@@ -494,6 +494,11 @@ initialiseHalls();
 const getWeather = async (location) => {
     const apiKey = 'c1fe0dfeb01b492cbdc193725223003';
     const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(location)}&aqi=no`);
+
+    // Handle errors
+    if (!response.ok)
+        throw new Error(`Could not fetch weather for ${location}`);
+
     return response.json();
 }
 
